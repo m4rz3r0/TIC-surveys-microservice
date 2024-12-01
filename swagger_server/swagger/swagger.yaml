@@ -1,0 +1,133 @@
+openapi: 3.0.0
+info:
+  title: S02 - Responder Encuestas
+  description: API para gestionar las respuestas de los usuarios a encuestas y formularios.
+  version: 1.0.0
+servers:
+- url: http://localhost:5001
+  description: Servidor local para desarrollo
+tags:
+- name: Surveys
+  description: Operaciones relacionadas con las encuestas.
+paths:
+  /surveys:
+    get:
+      tags:
+      - Surveys
+      summary: Obtener encuestas disponibles
+      description: Lista todas las encuestas que están publicadas y disponibles para
+        responder.
+      operationId: surveys_get
+      responses:
+        "200":
+          description: Lista de encuestas disponibles.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SurveyList'
+      x-openapi-router-controller: swagger_server.controllers.surveys_controller
+  /surveys/{id}:
+    get:
+      tags:
+      - Surveys
+      summary: Obtener detalles de una encuesta
+      description: "Devuelve la información de una encuesta específica, incluidas\
+        \ sus preguntas."
+      operationId: surveys_id_get
+      parameters:
+      - name: id
+        in: path
+        description: ID de la encuesta
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: Detalles de la encuesta.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SurveyDetail'
+      x-openapi-router-controller: swagger_server.controllers.surveys_controller
+components:
+  schemas:
+    Survey:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: Encuesta de satisfacción
+        description:
+          type: string
+          example: Queremos saber tu opinión sobre nuestro servicio
+        status:
+          type: string
+          example: published
+      example:
+        description: Queremos saber tu opinión sobre nuestro servicio
+        id: 1
+        title: Encuesta de satisfacción
+        status: published
+    SurveyList:
+      type: array
+      items:
+        $ref: '#/components/schemas/Survey'
+    Question:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 101
+        text:
+          type: string
+          example: ¿Qué tan satisfecho estás con nuestro servicio?
+        type:
+          type: string
+          example: multiple-choice
+        options:
+          type: array
+          items:
+            type: string
+            example: "[\"Muy satisfecho\",\"Neutral\",\"Insatisfecho\"]"
+      example:
+        options:
+        - "[\"Muy satisfecho\",\"Neutral\",\"Insatisfecho\"]"
+        - "[\"Muy satisfecho\",\"Neutral\",\"Insatisfecho\"]"
+        id: 101
+        text: ¿Qué tan satisfecho estás con nuestro servicio?
+        type: multiple-choice
+    SurveyDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: Encuesta de satisfacción
+        questions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Question'
+      example:
+        questions:
+        - options:
+          - "[\"Muy satisfecho\",\"Neutral\",\"Insatisfecho\"]"
+          - "[\"Muy satisfecho\",\"Neutral\",\"Insatisfecho\"]"
+          id: 101
+          text: ¿Qué tan satisfecho estás con nuestro servicio?
+          type: multiple-choice
+        - options:
+          - "[\"Muy satisfecho\",\"Neutral\",\"Insatisfecho\"]"
+          - "[\"Muy satisfecho\",\"Neutral\",\"Insatisfecho\"]"
+          id: 101
+          text: ¿Qué tan satisfecho estás con nuestro servicio?
+          type: multiple-choice
+        id: 1
+        title: Encuesta de satisfacción
+
